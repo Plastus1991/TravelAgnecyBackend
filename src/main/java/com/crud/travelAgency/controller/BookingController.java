@@ -20,6 +20,7 @@ public class BookingController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createBooking(@RequestBody BookingDto bookingDto) {
+
         Booking booking = mapperBooking.mapToBooking(bookingDto);
         bookingService.saveBooking(booking);
     }
