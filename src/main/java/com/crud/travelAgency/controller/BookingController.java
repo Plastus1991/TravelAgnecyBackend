@@ -25,7 +25,7 @@ public class BookingController {
         bookingService.saveBooking(booking);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "getBooking/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/getBooking/{id}")
     public BookingDto getBooking(@PathVariable Long id) throws Exception {
             Booking booking = bookingService.getBookingById(id).orElseThrow(Exception::new);
             return mapperBooking.mapToBookingDto(booking);

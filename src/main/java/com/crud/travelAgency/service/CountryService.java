@@ -14,8 +14,8 @@ public class CountryService {
 
     private final CountryRepository countryRepository;
 
-    public void saveCountry(final Country country) {
-        countryRepository.save(country);
+    public Country saveCountry(final Country country) {
+       return countryRepository.save(country);
     }
 
     public Optional<Country> getCustomerById(Long id) {

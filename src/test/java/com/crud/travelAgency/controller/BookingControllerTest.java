@@ -7,6 +7,7 @@ import com.crud.travelAgency.dto.BookingDto;
 import com.crud.travelAgency.mapper.MapperBooking;
 import com.crud.travelAgency.service.BookingService;
 import com.google.gson.Gson;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Date;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +38,6 @@ class BookingControllerTest {
     private BookingService bookingService;
     @MockBean
     private MapperBooking mapperBooking;
-
 
     @Test
     void testCreateBooking() throws Exception {
@@ -55,18 +56,54 @@ class BookingControllerTest {
         when(mapperBooking.mapToBooking(any(BookingDto.class))).thenReturn(booking);
         when(bookingService.saveBooking(any(Booking.class))).thenReturn(booking);
 
-        Gson gson =new Gson();
+        Gson gson = new Gson();
         String jsonContent = gson.toJson(bookingDto);
 
         //When & Then
         mockMvc
                 .perform(MockMvcRequestBuilders
-                .post("/v1/booking")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(jsonContent))
+                        .post("/v1/booking")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 
+    @Test
+    void testDeleteBooking() throws Exception {
+
+        //Given
+        //When & Then
+        mockMvc
+                .perform(MockMvcRequestBuilders
+                        .delete("/v1/booking/{bookingId}", 3L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void testGetBooking() throws Exception {
+
+        //Given
+        Booking booking = Booking.builder()
+                .id(10L)
+                .name("name1")
+                .build();
+
+        BookingDto bookingDto = BookingDto.builder()
+                .id(20L)
+                .name("name123")
+                .build();
+
+        when(bookingService.getBookingById(12L)).thenReturn(Optional.of(booking));
+        when(mapperBooking.mapToBookingDto(booking)).thenReturn(bookingDto);
+
+        //Then & When
+        mockMvc
+                .perform(MockMvcRequestBuilders
+                .get("/v1/booking/getBooking/{id}", 12L)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("name123")));
     }
 
 }

@@ -18,13 +18,13 @@ public class CountryController {
     private final CountryService countryService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createCountry(@RequestBody CountryDto countryDto) {
+    public Country createCountry(@RequestBody CountryDto countryDto) {
 
         Country country = mapperCountry.mapToCountry(countryDto);
-        countryService.saveCountry(country);
+        return countryService.saveCountry(country);
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "getCountry/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "getCountry/{id}")
     public CountryDto getCountry(@PathVariable Long id) throws Exception {
 
         Country country = countryService.getCustomerById(id).orElseThrow(Exception::new);
